@@ -1,0 +1,230 @@
+http:
+  pprof:
+    port: 6060
+    enabled: false
+  address: 0.0.0.0:80
+  session_ttl: 720h
+users:
+  - name: thundermiracle
+    password: $2a$10$luuebYk/gnr8N0pujxwPyeKiJ.xjvYdPdLtVFdfxZEUVNBEpTYEb6
+auth_attempts: 5
+block_auth_min: 15
+http_proxy: ""
+language: en
+theme: auto
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  anonymize_client_ip: false
+  ratelimit: 20
+  ratelimit_subnet_len_ipv4: 24
+  ratelimit_subnet_len_ipv6: 56
+  ratelimit_whitelist: []
+  refuse_any: true
+  upstream_dns:
+    - https://family.adguard-dns.com/dns-query
+    - https://family.cloudflare-dns.com/dns-query
+  upstream_dns_file: ""
+  bootstrap_dns:
+    - 9.9.9.10
+    - 149.112.112.10
+    - 2620:fe::10
+    - 2620:fe::fe:10
+  fallback_dns: []
+  upstream_mode: load_balance
+  fastest_timeout: 1s
+  allowed_clients: []
+  disallowed_clients: []
+  blocked_hosts:
+    - version.bind
+    - id.server
+    - hostname.bind
+  trusted_proxies:
+    - 127.0.0.0/8
+    - ::1/128
+  cache_size: 4194304
+  cache_ttl_min: 0
+  cache_ttl_max: 0
+  cache_optimistic: false
+  bogus_nxdomain: []
+  aaaa_disabled: false
+  enable_dnssec: false
+  edns_client_subnet:
+    custom_ip: ""
+    enabled: false
+    use_custom: false
+  max_goroutines: 300
+  handle_ddr: true
+  ipset: []
+  ipset_file: ""
+  bootstrap_prefer_ipv6: false
+  upstream_timeout: 10s
+  private_networks: []
+  use_private_ptr_resolvers: true
+  local_ptr_upstreams: []
+  use_dns64: false
+  dns64_prefixes: []
+  serve_http3: false
+  use_http3_upstreams: false
+  serve_plain_dns: false
+  hostsfile_enabled: true
+tls:
+  enabled: true
+  server_name: dns.thundermiracle.com
+  force_https: true
+  port_https: 443
+  port_dns_over_tls: 853
+  port_dns_over_quic: 853
+  port_dnscrypt: 0
+  dnscrypt_config_file: ""
+  allow_unencrypted_doh: false
+  certificate_chain: ""
+  private_key: ""
+  certificate_path: /opt/adguardhome/ssl/dns.thundermiracle.com.crt
+  private_key_path: /opt/adguardhome/ssl/dns.thundermiracle.com.key
+  strict_sni_check: false
+querylog:
+  dir_path: ""
+  ignored: []
+  interval: 2160h
+  size_memory: 1000
+  enabled: true
+  file_enabled: true
+statistics:
+  dir_path: ""
+  ignored: []
+  interval: 24h
+  enabled: true
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    name: AdGuard DNS filter
+    id: 1
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    name: AdAway Default Blocklist
+    id: 1706655019
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_29.txt
+    name: 'CHN: AdRules DNS List'
+    id: 1706655020
+  - enabled: true
+    url: https://filters.adtidy.org/mac_v2/filters/2_optimized.txt
+    name: BASE AdGuard for Mac
+    id: 1706655021
+  - enabled: true
+    url: https://filters.adtidy.org/ios/filters/2_optimized.txt
+    name: BASE AdGuard for iOS
+    id: 1706655022
+  - enabled: true
+    url: https://filters.adtidy.org/android/filters/2_optimized.txt
+    name: BASE AdGuard for Android
+    id: 1706655023
+  - enabled: true
+    url: https://filters.adtidy.org/windows/filters/2_optimized.txt
+    name: BASE AdGuard for Windows
+    id: 1706655024
+  - enabled: true
+    url: https://raw.githubusercontent.com/Yuki2718/adblock2/main/japanese/jpf-plus.txt
+    name: AdGuard Japanese filter Plus
+    id: 1706655025
+  - enabled: true
+    url: https://filters.adtidy.org/mac_v2/filters/7_optimized.txt
+    name: JP AdGuard for Mac
+    id: 1706655026
+  - enabled: true
+    url: https://filters.adtidy.org/android/filters/7_optimized.txt
+    name: JP AdGuard for Android
+    id: 1706655027
+  - enabled: true
+    url: https://filters.adtidy.org/ios/filters/7_optimized.txt
+    name: JP AdGuard for iOS
+    id: 1706655028
+  - enabled: true
+    url: https://filters.adtidy.org/windows/filters/7_optimized.txt
+    name: JP AdGuard for Windows
+    id: 1706655029
+whitelist_filters: []
+user_rules:
+  - '||pm.yahoo.jp^$important'
+  - '||voom-assets.line-scdn.net^$important'
+  - '||voom-obs.line-scdn.net^$important'
+  - '||news-obs.line-scdn.net^$important'
+  - '@@||app-measurement.com^$important'
+  - '@@||ap01.records.in.treasuredata.com^$important'
+  - '@@||7300007.collect.igodigital.com^$important'
+  - '@@||device-provisioning.googleapis.com^$important'
+  - '||search.yahoo.co.jp^'
+  - '||torimochi.line-apps.com^$important'
+  - '||sentry-uit.line-apps.com^$important'
+  - '||liff.line.me^$important'
+  - ""
+dhcp:
+  enabled: false
+  interface_name: ""
+  local_domain_name: lan
+  dhcpv4:
+    gateway_ip: ""
+    subnet_mask: ""
+    range_start: ""
+    range_end: ""
+    lease_duration: 86400
+    icmp_timeout_msec: 1000
+    options: []
+  dhcpv6:
+    range_start: ""
+    lease_duration: 86400
+    ra_slaac_only: false
+    ra_allow_slaac: false
+filtering:
+  blocking_ipv4: ""
+  blocking_ipv6: ""
+  blocked_services:
+    schedule:
+      time_zone: Local
+    ids: []
+  protection_disabled_until: null
+  safe_search:
+    enabled: false
+    bing: true
+    duckduckgo: true
+    google: true
+    pixabay: true
+    yandex: true
+    youtube: true
+  blocking_mode: default
+  parental_block_host: family-block.dns.adguard.com
+  safebrowsing_block_host: standard-block.dns.adguard.com
+  rewrites: []
+  safebrowsing_cache_size: 1048576
+  safesearch_cache_size: 1048576
+  parental_cache_size: 1048576
+  cache_time: 30
+  filters_update_interval: 24
+  blocked_response_ttl: 10
+  filtering_enabled: true
+  parental_enabled: false
+  safebrowsing_enabled: false
+  protection_enabled: true
+clients:
+  runtime_sources:
+    whois: true
+    arp: true
+    rdns: true
+    dhcp: true
+    hosts: true
+  persistent: []
+log:
+  file: ""
+  max_backups: 0
+  max_size: 100
+  max_age: 3
+  compress: false
+  local_time: false
+  verbose: false
+os:
+  group: ""
+  user: ""
+  rlimit_nofile: 0
+schema_version: 28

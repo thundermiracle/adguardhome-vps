@@ -1,0 +1,56 @@
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.6-alpine
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost.d:/etc/nginx/vhost.d
+      - ./nginx/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - nginx-proxy
+
+  letsencrypt:
+    image: nginxproxy/acme-companion
+    container_name: letsencrypt
+    restart: always
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/vhost.d:/etc/nginx/vhost.d
+      - ./nginx/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - nginx-proxy
+
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: always
+    environment:
+      - VIRTUAL_HOST=dns.thundermiracle.com
+      - LETSENCRYPT_HOST=dns.thundermiracle.com
+      - LETSENCRYPT_EMAIL=info@thundermiracle.com
+    volumes:
+      - ./adguard-home/data:/opt/adguardhome/data
+      - ./adguard-home/AdGuardHome.yaml:/opt/adguardhome/AdGuardHome.yaml
+      - ./nginx/certs:/opt/adguardhome/ssl
+    networks:
+      - nginx-proxy
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "853:853/tcp"     # DNS-over-TLS
+      - "784:784/udp"     # DNS-over-QUIC
+      - "8853:8853/udp"   # DNS-over-HTTPS
+    cap_add:
+      - NET_ADMIN
+
+networks:
+  nginx-proxy:
+    external: true
