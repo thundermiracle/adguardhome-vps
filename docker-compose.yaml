@@ -7,12 +7,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/certs:/etc/nginx/certs:ro
       - ./nginx/vhost.d:/etc/nginx/vhost.d
       - ./nginx/html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
-      - nginx-proxy
+      - nginx-proxy-net
 
   letsencrypt:
     image: nginxproxy/acme-companion
@@ -20,13 +20,16 @@ services:
     restart: always
     depends_on:
       - nginx-proxy
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+      - ACME_CA_URI=https://acme-v02.api.letsencrypt.org/directory
     volumes:
-      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/certs:/etc/nginx/certs:rw
       - ./nginx/vhost.d:/etc/nginx/vhost.d
       - ./nginx/html:/usr/share/nginx/html
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
-      - nginx-proxy
+      - nginx-proxy-net
 
   adguardhome:
     image: adguard/adguardhome:latest
@@ -37,11 +40,11 @@ services:
       - LETSENCRYPT_HOST=dns.thundermiracle.com
       - LETSENCRYPT_EMAIL=info@thundermiracle.com
     volumes:
-      - ./adguard-home/data:/opt/adguardhome/data
-      - ./adguard-home/AdGuardHome.yaml:/opt/adguardhome/AdGuardHome.yaml
-      - ./nginx/certs:/opt/adguardhome/ssl
+      - ./adguard-home/work:/opt/adguardhome/work
+      - ./adguard-home/conf:/opt/adguardhome/conf
+      - ./nginx/certs:/opt/adguardhome/ssl:ro
     networks:
-      - nginx-proxy
+      - nginx-proxy-net
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -52,5 +55,5 @@ services:
       - NET_ADMIN
 
 networks:
-  nginx-proxy:
-    external: true
+  nginx-proxy-net:
+    driver: bridge
