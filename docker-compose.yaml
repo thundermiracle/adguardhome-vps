@@ -1,35 +1,28 @@
 services:
-  nginx-proxy:
-    image: nginxproxy/nginx-proxy:1.6-alpine
-    container_name: nginx-proxy
-    restart: always
+  # ACMEチャレンジ用の簡易Webサーバー
+  web:
+    image: nginx:latest
+    container_name: acme_web
+    restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - ./nginx/certs:/etc/nginx/certs:ro
-      - ./nginx/vhost.d:/etc/nginx/vhost.d
-      - ./nginx/html:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certbot/www:/var/www/certbot
     networks:
-      - nginx-proxy-net
+      - webnet
 
-  letsencrypt:
-    image: nginxproxy/acme-companion
-    container_name: letsencrypt
-    restart: always
-    depends_on:
-      - nginx-proxy
-    environment:
-      - NGINX_PROXY_CONTAINER=nginx-proxy
-      - ACME_CA_URI=https://acme-v02.api.letsencrypt.org/directory
+  # 初回証明書取得用のCertbotサービス
+  certbot_init:
+    image: certbot/certbot
+    container_name: certbot_init
     volumes:
-      - ./nginx/certs:/etc/nginx/certs:rw
-      - ./nginx/vhost.d:/etc/nginx/vhost.d
-      - ./nginx/html:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: /bin/sh -c "certbot certonly --webroot -w /var/www/certbot -d dns.thundermiracle.com --email info@thundermiracle.com --agree-tos --no-eff-email && echo '初回証明書取得完了'"
+    depends_on:
+      - web
     networks:
-      - nginx-proxy-net
+      - webnet
 
   adguardhome:
     image: adguard/adguardhome:latest
@@ -42,10 +35,9 @@ services:
     volumes:
       - ./adguard-home/work:/opt/adguardhome/work
       - ./adguard-home/conf:/opt/adguardhome/conf
-      - ./nginx/certs:/opt/adguardhome/ssl:ro
-    networks:
-      - nginx-proxy-net
+      - ./certbot/conf/live/dns.thundermiracle.com:/opt/adguardhome/ssl
     ports:
+      - "3000:3000"
       - "53:53/tcp"
       - "53:53/udp"
       - "853:853/tcp"     # DNS-over-TLS
@@ -53,7 +45,24 @@ services:
       - "8853:8853/udp"   # DNS-over-HTTPS
     cap_add:
       - NET_ADMIN
+    depends_on:
+      - certbot_init
+    networks:
+      - webnet
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot_renew
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot && kill -HUP 1; sleep 12h & wait $${!}; done'"
+    depends_on:
+      - web
+      - adguardhome
+    networks:
+      - webnet
 
 networks:
-  nginx-proxy-net:
+  webnet:
     driver: bridge
