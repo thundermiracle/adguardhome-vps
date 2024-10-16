@@ -67,7 +67,7 @@ dns:
   dns64_prefixes: []
   serve_http3: false
   use_http3_upstreams: false
-  serve_plain_dns: false
+  serve_plain_dns: true
   hostsfile_enabled: true
 tls:
   enabled: false
@@ -182,7 +182,7 @@ filtering:
   blocking_ipv6: ""
   blocked_services:
     schedule:
-      time_zone: Local
+      time_zone: Asia/Tokyo
     ids: []
   protection_disabled_until: null
   safe_search:
