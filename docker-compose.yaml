@@ -30,9 +30,7 @@ services:
     container_name: adguardhome
     restart: always
     environment:
-      - VIRTUAL_HOST=dns.thundermiracle.com
-      - LETSENCRYPT_HOST=dns.thundermiracle.com
-      - LETSENCRYPT_EMAIL=info@thundermiracle.com
+      - TZ=Asia/Tokyo
     volumes:
       - ./adguard-home/work:/opt/adguardhome/work
       - ./adguard-home/conf:/opt/adguardhome/conf
@@ -44,8 +42,6 @@ services:
       - "853:853/tcp"     # DNS-over-TLS
       - "784:784/udp"     # DNS-over-QUIC
       - "8853:8853/udp"   # DNS-over-HTTPS
-    environment:
-      - TZ=Asia/Tokyo
     cap_add:
       - NET_ADMIN
     depends_on:
