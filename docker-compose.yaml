@@ -36,7 +36,7 @@ services:
     volumes:
       - ./adguard-home/work:/opt/adguardhome/work
       - ./adguard-home/conf:/opt/adguardhome/conf
-      - ./certbot/conf/live/dns.thundermiracle.com:/opt/adguardhome/ssl:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
     ports:
       - "3000:3000"
       - "53:53/tcp"
@@ -44,6 +44,8 @@ services:
       - "853:853/tcp"     # DNS-over-TLS
       - "784:784/udp"     # DNS-over-QUIC
       - "8853:8853/udp"   # DNS-over-HTTPS
+    environment:
+      - TZ=Asia/Tokyo
     cap_add:
       - NET_ADMIN
     depends_on:

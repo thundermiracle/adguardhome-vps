@@ -61,7 +61,7 @@ dns:
   bootstrap_prefer_ipv6: false
   upstream_timeout: 10s
   private_networks: []
-  use_private_ptr_resolvers: true
+  use_private_ptr_resolvers: false
   local_ptr_upstreams: []
   use_dns64: false
   dns64_prefixes: []
@@ -81,8 +81,8 @@ tls:
   allow_unencrypted_doh: false
   certificate_chain: ""
   private_key: ""
-  certificate_path: /opt/adguardhome/ssl/fullchain.pem
-  private_key_path: /opt/adguardhome/ssl/privkey.pem
+  certificate_path: /etc/letsencrypt/live/dns.thundermiracle.com/fullchain.pem
+  private_key_path: /etc/letsencrypt/live/dns.thundermiracle.com/privkey.pem
   strict_sni_check: false
 querylog:
   dir_path: ""
