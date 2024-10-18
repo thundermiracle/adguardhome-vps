@@ -67,10 +67,10 @@ dns:
   dns64_prefixes: []
   serve_http3: false
   use_http3_upstreams: false
-  serve_plain_dns: true
+  serve_plain_dns: false
   hostsfile_enabled: true
 tls:
-  enabled: false
+  enabled: true
   server_name: dns.thundermiracle.com
   force_https: false
   port_https: 443
