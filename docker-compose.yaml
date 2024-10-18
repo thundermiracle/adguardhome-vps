@@ -36,7 +36,7 @@ services:
       - ./adguard-home/conf:/opt/adguardhome/conf
       - ./certbot/conf:/etc/letsencrypt:ro
     ports:
-      - "3000:3000"
+      - "443:443/tcp"
       - "53:53/tcp"
       - "53:53/udp"
       - "853:853/tcp"     # DNS-over-TLS
@@ -56,7 +56,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - /var/run/docker.sock:/var/run/docker.sock  # Docker ソケットをマウント
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --preferred-challenges http --webroot -w /var/www/certbot && docker restart adguardhome; sleep 12h & wait $${!}; done'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --preferred-challenges http --webroot -w /var/www/certbot; sleep 12h & wait $${!}; done'"
     depends_on:
       - acme_web
       - adguardhome
